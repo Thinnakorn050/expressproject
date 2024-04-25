@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Booking</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+</head>
+<body>
+  <h2>Student Booking</h2>
+  <form id="bookingForm">
+    <label for="roomname">Room Name:</label><br>
+    <input type="text" id="roomname" name="roomname" required><br>
+    <label for="room_status">Room Status:</label><br>
+    <input type="text" id="room_status" name="room_status" required><br>
+    <label for="time_slot">Time Slot:</label><br>
+    <input type="text" id="time_slot" name="time_slot" required><br>
+    <label for="reason">Reason:</label><br>
+    <textarea id="reason" name="reason" required></textarea><br>
+    <!-- เพิ่มช่อง "status" และตั้งค่าเป็น 'pending' -->
+    <input type="hidden" id="status" name="status" value="pending">
+    <button type="submit">Book</button>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script>
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+      const bookingData = {};
+      formData.forEach((value, key) => {
+        bookingData[key] = value;
+      });
+
+      axios.post('/api/bookings', bookingData)
+        .then(response => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Booking Successful',
+            text: 'Your booking has been successfully recorded.'
+          }).then(() => {
+            window.location.href = '/student_status.html';
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Booking Failed',
+            text: 'There was an error while processing your booking. Please try again later.'
+          });
+        });
+    });
+  </script>
+</body>
+</html>

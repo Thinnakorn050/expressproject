@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard</title>
+</head>
+<body>
+  <h2>Staff Dashboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Room Name</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="roomTableBody">
+      <!-- Table rows will be created here using JavaScript -->
+    </tbody>
+  </table>
+
+  <button onclick="addRoom()">Add Room</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Function to load room status data from student_status.html
+    function loadRoomStatusFromStudent() {
+      axios.get('/api/room-status-from-student')
+        .then(response => {
+          const rooms = response.data;
+          const roomTableBody = document.getElementById('roomTableBody');
+          roomTableBody.innerHTML = '';
+
+          rooms.forEach(room => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${room.roomName}</td>
+              <td>${room.status}</td>
+              <td>
+                <button onclick="editRoom(${room.id})">Edit</button>
+              </td>
+            `;
+            roomTableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Function to add room
+    function addRoom() {
+      // Implement adding room functionality
+    }
+
+    // Function to edit room
+    function editRoom(roomId) {
+      // Redirect the user to the room editing page with the room ID as a parameter
+      window.location.href = `/edit-room.html?id=${roomId}`;
+    }
+
+    // Load room status data from student_status.html when the page loads
+    loadRoomStatusFromStudent();
+  </script>
+</body>
+</html>

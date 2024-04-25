@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking history</title>
+</head>
+<body>
+  <h2>Booking history</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Room Name</th>
+        <th>Room Status</th>
+        <th>Time Slot</th>
+        <th>Reason</th>
+        <th>Approver</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="bookingTableBody">
+      <!-- ตารางจะถูกสร้างขึ้นด้านนี้โดยใช้ JavaScript -->
+    </tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    axios.get('/api/bookings')
+      .then(response => {
+        const bookings = response.data;
+        const bookingTableBody = document.getElementById('bookingTableBody');
+
+        bookings.forEach(booking => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${booking.roomname}</td>
+            <td>${booking.room_status}</td>
+            <td>${booking.time_slot}</td>
+            <td>${booking.reason}</td>
+            <td>${booking.approver}</td>
+            <td>${booking.status}</td>
+          `;
+          bookingTableBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecture Booking Request</title>
+</head>
+<body>
+  <h2>Lecture Booking Request</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Room Name</th>
+        <th>Room Status</th>
+        <th>Time Slot</th>
+        <th>Reason</th>
+        <th>Approver</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="bookingTableBody">
+      <!-- Table rows will be created here using JavaScript -->
+    </tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Function to handle approve button click
+    function approveBooking(bookingId) {
+      axios.put(`/api/bookings/${bookingId}`, { status: 'Approved', approver: 'Lecture' })
+        .then(response => {
+          console.log(response.data);
+          location.reload(); // Reload the page after updating status
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Function to handle reject button click
+    function rejectBooking(bookingId) {
+      axios.put(`/api/bookings/${bookingId}`, { status: 'Rejected', approver: 'Lecture' })
+        .then(response => {
+          console.log(response.data);
+          location.reload(); // Reload the page after updating status
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    // Load student booking status data
+    axios.get('/api/student-booking-status/:studentId')
+      .then(response => {
+        const bookings = response.data;
+        const bookingTableBody = document.getElementById('bookingTableBody');
+
+        bookings.forEach(booking => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${booking.roomname}</td>
+            <td>${booking.room_status}</td>
+            <td>${booking.time_slot}</td>
+            <td>${booking.reason}</td>
+            <td>${booking.approver}</td>
+            <td>${booking.status}</td>
+            <td>
+              <button onclick="approveBooking(${booking.id})">Approve</button>
+              <button onclick="rejectBooking(${booking.id})">Reject</button>
+            </td>
+          `;
+          bookingTableBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>
